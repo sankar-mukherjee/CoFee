@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 04 14:51:22 2015
+
+@author: mukherjee
+"""
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import preprocessing, metrics, cross_validation
+from sklearn.ensemble import AdaBoostClassifier
+
+# read Form data
+DATA_FORM_FILE = 'all-merged-cat.csv'
+rawdata = pd.read_csv(DATA_FORM_FILE, usecols=np.r_[3,5:12,13:28,81:87,108])
+
+#select features
+
+posfeat = pd.DataFrame.as_matrix(rawdata)[:,np.r_[0:8,10:23]].astype(float)
+
+# select test labels
+#Ytest = pd.DataFrame.as_matrix(rawdata)[:,20:26].astype(float)
+label = pd.DataFrame.as_matrix(rawdata)[:,29]
+
+#remove bad features as there is no label
+scale = np.where(label == 'None')
+label = np.delete(label,scale)
+posfeat = np.delete(posfeat,scale,0)
+
+# Transforming categorical feature
+le = preprocessing.LabelEncoder()
+le.fit(label)
+list(le.classes_)
+label = le.transform(label)
+
+# create traning and test data by partioning
+#nSamples = len(posfeat)
+
+XtrainPos = posfeat
+#YtrainPos = label[:.7 * nSamples]
+#
+#XtestPos = posfeat[.7 * nSamples:,:]
+#YtestPos = label[.7 * nSamples:]                
+
+#normalization of features
+scale = preprocessing.StandardScaler().fit(XtrainPos)
+XtrainPos = scale.fit_transform(XtrainPos)
+
+#scale = preprocessing.MinMaxScaler()
+#XtrainPos = scale.fit_transform(XtrainPos)
+#
+scale = preprocessing.Normalizer().fit(XtrainPos)
+XtrainPos = scale.fit_transform(XtrainPos)
+
+#classification
+clf = AdaBoostClassifier(n_estimators=100)
+scores = cross_validation.cross_val_score(clf, XtrainPos, label, scoring='f1')
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+

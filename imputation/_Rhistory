@@ -1,0 +1,187 @@
+q()
+install.packages(stringr)
+rm(list = ls())
+load("Lexique380_noDuplicate.RData")
+#######
+# gathereing all unique onset syllables and their frequencys
+onset_total <- data.frame(data$onset_CV, data$freq_onset_CV)
+onset_total <- unique(onset_total)
+names(onset_total) <- c("onset_CV","freq_onset_CV")
+for (kk in 1:length(onset_total[,1])) {
+# Now start building up the domino chain...
+onset_CV <- as.character(onset_total$onset_CV[kk])
+name <- paste('chains/',onset_CV,'.txt',sep="")
+# Now start building up the domino chain...
+n_dominoes <- 2000
+#######
+target_word = ""
+tw <- vector("character",n_dominoes)
+tw[1] <- target_word
+tw_frequlemfilms2 <- vector("character",n_dominoes)
+dw <- vector("character",n_dominoes)
+dw[1] <- ""
+tw_p <- vector("character",n_dominoes)
+tw_p[1] <- target_word
+dw_p <- vector("character",n_dominoes)
+dw_p[1] <- ""
+for (i in 2:n_dominoes) {
+# find Target Word
+target_word <- data[data$onset_CV == onset_CV,]
+# print(length(target_word$ortho))
+# do not pick a target word that has already been selected before
+for (j in 1:(i-1)) {
+target_word <- target_word[target_word$ortho != tw[j],]
+}
+# print(length(target_word$ortho))
+# Within the target_word set, pick one whose final syll also occurs in word-initial position
+final_CV <- target_word$final_CV[target_word$final_CV != onset_CV]
+final_CV <- as.character(final_CV)
+freq_onset_CV <- vector("numeric",length(final_CV))
+for (k in 1:length(final_CV)) {
+dummy <- data$freq_onset_CV[data$onset_CV == final_CV[k]]
+freq_onset_CV[k] <- dummy[1]
+}
+onset_CVs <- final_CV[!is.na(freq_onset_CV) & (freq_onset_CV > 1)]
+#print(length(onset_CV))
+if(length(onset_CVs) == 0){
+write.table(data.frame(tw,tw_p,tw_frequlemfilms2,dw,dw_p), name, sep=",",row.names=FALSE,
+col.names=c("target","target_p","frequlemfilms2","distractor","distractor_p"),quote = FALSE)
+break
+}
+# select maximum frequency syllable
+#onset_CV <- sample(onset_CVs,1)
+onset_total_freq <- onset_total[which(onset_total$onset_CV %in% onset_CVs),]
+onset_CV <- onset_total_freq[which(onset_total_freq$freq_onset_CV == max(onset_total_freq$freq_onset_CV)),]
+onset_CV <- as.character(onset_CV$onset_CV[1])
+target_word <- target_word[target_word$final_CV == onset_CV,]
+c_i <- order(target_word$freqlivres,decreasing=TRUE)
+target_word <- target_word[c_i,]
+target_word_onset_cv <- as.character(target_word$onset_CV[1])
+target_word <- as.character(target_word$ortho[1])
+# Done!
+tw[i] <- target_word
+target_data <- data[data$ortho == tw[i],]
+tw_p[i] <- as.character(target_data$syll)
+tw_frequlemfilms2[i] <- as.character(target_data$freqlemfilms2)
+target_word_onset_cv <- as.character(target_data$onset_CV)
+target_word_final_cv <- as.character(target_data$final_CV)
+dis_word <- data[(data$onset_CV != target_word_onset_cv & data$final_CV != target_word_final_cv), ]
+dis_word <- dis_word[sample(nrow(dis_word),1),]
+dw[i] <- as.character(dis_word$ortho[1])
+dw_p[i] <- as.character(dis_word$syll[1])
+print(paste(i,target_word))
+#   plot(density(onset_total_freq$freq_onset_CV))
+#   Sys.sleep(1)
+}
+write.table(data.frame(tw,tw_p,tw_frequlemfilms2,dw,dw_p), name, sep=",",row.names=FALSE,
+col.names=c("target","target_p","frequlemfilms2","distractor","distractor_p"),quote = FALSE)
+}
+load("Lexique380_noDuplicate.RData")
+load("~/dominnos/Lexique380_noDuplicate.RData")
+#######
+# gathereing all unique onset syllables and their frequencys
+onset_total <- data.frame(data$onset_CV, data$freq_onset_CV)
+onset_total <- unique(onset_total)
+names(onset_total) <- c("onset_CV","freq_onset_CV")
+for (kk in 1:length(onset_total[,1])) {
+# Now start building up the domino chain...
+onset_CV <- as.character(onset_total$onset_CV[kk])
+name <- paste('chains/',onset_CV,'.txt',sep="")
+# Now start building up the domino chain...
+n_dominoes <- 2000
+#######
+target_word = ""
+tw <- vector("character",n_dominoes)
+tw[1] <- target_word
+tw_frequlemfilms2 <- vector("character",n_dominoes)
+dw <- vector("character",n_dominoes)
+dw[1] <- ""
+tw_p <- vector("character",n_dominoes)
+tw_p[1] <- target_word
+dw_p <- vector("character",n_dominoes)
+dw_p[1] <- ""
+for (i in 2:n_dominoes) {
+# find Target Word
+target_word <- data[data$onset_CV == onset_CV,]
+# print(length(target_word$ortho))
+# do not pick a target word that has already been selected before
+for (j in 1:(i-1)) {
+target_word <- target_word[target_word$ortho != tw[j],]
+}
+# print(length(target_word$ortho))
+# Within the target_word set, pick one whose final syll also occurs in word-initial position
+final_CV <- target_word$final_CV[target_word$final_CV != onset_CV]
+final_CV <- as.character(final_CV)
+freq_onset_CV <- vector("numeric",length(final_CV))
+for (k in 1:length(final_CV)) {
+dummy <- data$freq_onset_CV[data$onset_CV == final_CV[k]]
+freq_onset_CV[k] <- dummy[1]
+}
+onset_CVs <- final_CV[!is.na(freq_onset_CV) & (freq_onset_CV > 1)]
+#print(length(onset_CV))
+if(length(onset_CVs) == 0){
+write.table(data.frame(tw,tw_p,tw_frequlemfilms2,dw,dw_p), name, sep=",",row.names=FALSE,
+col.names=c("target","target_p","frequlemfilms2","distractor","distractor_p"),quote = FALSE)
+break
+}
+# select maximum frequency syllable
+#onset_CV <- sample(onset_CVs,1)
+onset_total_freq <- onset_total[which(onset_total$onset_CV %in% onset_CVs),]
+onset_CV <- onset_total_freq[which(onset_total_freq$freq_onset_CV == max(onset_total_freq$freq_onset_CV)),]
+onset_CV <- as.character(onset_CV$onset_CV[1])
+target_word <- target_word[target_word$final_CV == onset_CV,]
+c_i <- order(target_word$freqlivres,decreasing=TRUE)
+target_word <- target_word[c_i,]
+target_word_onset_cv <- as.character(target_word$onset_CV[1])
+target_word <- as.character(target_word$ortho[1])
+# Done!
+tw[i] <- target_word
+target_data <- data[data$ortho == tw[i],]
+tw_p[i] <- as.character(target_data$syll)
+tw_frequlemfilms2[i] <- as.character(target_data$freqlemfilms2)
+target_word_onset_cv <- as.character(target_data$onset_CV)
+target_word_final_cv <- as.character(target_data$final_CV)
+dis_word <- data[(data$onset_CV != target_word_onset_cv & data$final_CV != target_word_final_cv), ]
+dis_word <- dis_word[sample(nrow(dis_word),1),]
+dw[i] <- as.character(dis_word$ortho[1])
+dw_p[i] <- as.character(dis_word$syll[1])
+print(paste(i,target_word))
+#   plot(density(onset_total_freq$freq_onset_CV))
+#   Sys.sleep(1)
+}
+write.table(data.frame(tw,tw_p,tw_frequlemfilms2,dw,dw_p), name, sep=",",row.names=FALSE,
+col.names=c("target","target_p","frequlemfilms2","distractor","distractor_p"),quote = FALSE)
+}
+write.table(data.frame(tw,tw_p,tw_frequlemfilms2,dw,dw_p), name, sep=",",row.names=FALSE,
+col.names=c("target","target_p","frequlemfilms2","distractor","distractor_p"),quote = FALSE)
+setwd("C:/Users/mukherjee/Desktop/coffie/analysis/data/multiple-imputation")
+require(ggplot2)
+library(manipulate)
+data = read.csv('big1.csv',head=TRUE,sep=',')
+ori = read.csv('CoFee-BigDataset_ordered.csv',head=TRUE,sep=';')
+y = ori$simple
+plot(y)
+qplot(data$sa,data$SimScoreIPU,col=ori$simple)
+qplot(data$sa,data$SimScoreIPU,col=ori$simple)
+data$osa[data$osa > 4]=4
+data$osa[data$osa < 0]=0
+plot(density(data$osa))
+manipulate(qplot(do,duration,data=data,xlim = c(0,1),ylim=c(0,3),color=ori$simple)
+,label=ori$simple)
+qplot(data$pa,data$form3,data=data,color=ori$simple)
+qplot(data$pa,data$aperiodAV,data=data,color=ori$simple)
+qplot(data$opa,data$intQ2Interl,color=ori$simple)
+qplot(data$sa,ori$uttInterl,col=ori$simple)
+qplot(data$sa,data$pauseBefore,col=ori$simple)
+qplot(data$sa,data$pauseBefore,col=ori$simple,xlim = c(0,10),ylim=c(0,10))
+index= which(ori$simple == 'complex')
+x = data$do[-index]
+y = data$duration[-index]
+qplot(x,y,xlim = c(0,1),ylim=c(0,3),color=ori$simple)
+label = ori$simple[-index]
+qplot(x,y,xlim = c(0,1),ylim=c(0,3),color=label)
+qplot(data$do,data$span,xlim = c(0,4),col=ori$simple)
+qplot(data$sa,data$height,col=ori$simple,xlim = c(0,10),ylim=c(0,10))
+plot(data$osa,data$duration,pch = '*')
+qplot(data$do,data$span,xlim = c(0,4),col=ori$simple)
+qplot(data$do,data$duration,xlim = c(0,4),col=ori$simple)

@@ -1,0 +1,6 @@
+install.packages('devtools')
+library('devtools')
+install_github('rCharts', 'ramnathv')
+library('rCharts')
+install.packages("reshape2")
+library("reshape2")

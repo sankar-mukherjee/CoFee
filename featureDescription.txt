@@ -1,0 +1,54 @@
+--- steepness = steepness of the polynomial fit to the F0 curve. 
+--- slope = steepness per second
+--- NanRatio = ratio between the number of missing F0 values (due to voicelessness) and the number of valid F0 values.
+--- f0min = minimum value of all F0 values
+--- f0max = maximum value of all F0 values
+--- f0stdev = standard deviation of all of all F0 values
+--- span = f0max-f0min
+--- height = median of the contour
+--- duration = endtime of Signal (speaker) - starttime of Signal (speaker)
+--- form1 = first Formant
+--- form2 = second Formant
+--- form3 = third Formant
+--- aperiodAV = mean of aperiodicity contour
+--- intQ1 = first quartile of intensity: 25% of values are less than that number = 25th percentile
+--- intQ2 = second quartile: median of intensity
+--- intQ3 = third quartile: 75% of the data is less than that number = 75th percentile
+--- intQ1raw = same as above, but for the raw intensity contour (contour not based on word segmentation)
+--- intQ2raw = same as above, but for the raw intensity contour (contour not based on word segmentation)
+--- intQ3raw = same as above, but for the raw intensity contour (contour not based on word segmentation)
+--- pauseBefore = endtime_speaker - endtime_interlocutor % it is questionable what this feature serves for, but I might have needed it at some point
+--- SimScoreWord = the similarity score between the F0 contour of the target words of the speaker (target contour) and the F0 contour of the last word of the interlocutor preceding the speaker
+--- SimScoreIPU = the similarity score between the target contour and the ast IPU of the interlocutor preceding the speaker
+--- TFcomparedWord = True False (is there a word by the interlocutor in the range of 3 seconds before the target word of the target speaker?)
+--- TFcomparedIPU = True False (is there an IPU by the interlocutor in the range of 3 seconds ...?)
+--- tokenInterl = the word of the interlocutor to which the words of the speaker are compared for 'SimScoreWord'
+--- uttInterl = all words of the interlocutor that fall into the 3 seconds range before the target words from the speaker
+--- IPUInterl = The IPU to which the target words are compared for 'SimScoreIPU'
+
+LEX: 
+nbmh : number of mh in the feedback unit
+nbouais: number of mh  in the feedback unit
+size: length in token of the feedback unit
+'ouais','mh', 'laugh','ah','bon','oui','mais','ok','dac','voila','non','et': presence of this lexical item in the unit (12 features)
+'trans' : transcription with a treshold of frequency applied later (currently 30)
+
+POS:
+'sa': speech after
+'pa': pause after
+'pb': pause before
+'opa': interlocutor pause after
+'opb': interlocutor pause before
+'osa': interlocutor speech after
+'osb': interlocutor speech before
+'do': duration of overlap
+'ndo': normalized duration of overlap (based on duration of the unit)
+'posDial': global position in the conversation (normalised)
+
+CTX:
+'prevNbTu','prevNbJe',,'prevNbFeedback': number of "tu"/"je"/"feedback words" in the previous IPU from the speaker
+'prevRed': 1 if there is a redundancy (except stopwords and feedback words) between the feedback unit and the previous utterance
+'prevSize': size (in token) of the previous utterance of the speaker
+'othNbTu','othNbJe','othNbFeedback','othSize','othRed' : idem as above but for the previous IPU of the interlocutor
+'prevLastTok','prevFirstTok','prevLastBi','prevfirstBi' : last / first - token / bigram of the previous utterance from the speaker
+'othLastTok','othLastBi','othFirstTok','othfirstBi': last / first - token / bigram of the previous utterance from the interlocutor 
