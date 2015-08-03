@@ -190,7 +190,7 @@ print(metrics.classification_report(YtestPos, clf.predict(XtestPos)))
 ####---------------------------------Check for overfeat-------------------------------------
 train_sample_size, train_scores, test_scores = learning_curve(clf,
                                                               XtrainAll, label, 
-                                                              train_sizes=np.arange(10,100,10), cv=10)
+                                                              train_sizes=np.arange(0.1,1,0.1), cv=10)
 
 #----------------------------------------Visualization---------------------------------------------
 plt.xlabel("# Training sample")
